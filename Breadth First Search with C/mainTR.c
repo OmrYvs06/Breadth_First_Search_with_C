@@ -36,9 +36,9 @@ int deQueue(struct  Queue*);
 void printQueue(struct Queue*);
 struct Node* BFS(struct List*, int, int);
 
-int main(){
+int main(){ // graphÄ± almaya kadar temiz Ã§alÄ±ÅŸÄ±yor devamÄ± bilinmiyor;
     FILE *fptr = fopen("maze.txt","r");
-    if(fptr == NULL){//dosya okunmasÄ±nda sorunlarÄ± kontrol ediyor,varsa dosyanÄ±n nerde olmasÄ± gerektiÄŸine bir Ã¶rnek gÃ¶steriyor;
+    if(fptr == NULL){ // dosya okunmasÄ±nda sorunlarÄ± kontrol ediyor,varsa dosyanÄ±n nerde olmasÄ± gerektiÄŸine bir Ã¶rnek gÃ¶steriyor;
         fptr = fopen("maze.txt","w");
         printf("Dosya bulunamadi.\n"
                "Ornek amacli bir dosya olusturuldu.(maze.txt)\n"
@@ -49,18 +49,18 @@ int main(){
     }
     struct Matris* matrisStruct = fMatrisAl(fptr);
     if(matrisStruct == NULL){ // dosya formatÄ±nÄ± kontrol ediyor;
-        printf("Dosya formati kare matrisi icin uygun degil!");
+        printf("dosya formati kare matrisi icin uygun degil");
         getch();
         return 2;// dosya formatÄ± yanlÄ±ÅŸ;
     }
     struct List* list = matrisToList(matrisStruct);
 
     struct Node* sonuc = BFS(list,list->numNodes-1,0);
-    // varsayýlan olarak en yüksek olan baþlangýç,?en düþük olan (yani 0) bitiþ olacaktýr;
+    // En yÃ¼ksek start, en dÃ¼ÅŸÃ¼k (yani 0) end olacaktÄ±r;
 
     printf("\n");
     printf("BFS ile sayiyi ararken kontrol edilen kose'ler:\n");
-    printNode(sonuc); // kontrol iÃ§in daha Ã¶ncesinde ekrana "queue" leride yazdÄ±rdÄ±m.
+    printNode(sonuc); // kontrol iÃ§in daha Ã¶ncesinde ekrana "queue" leride yazdÄ±rdÄ±m;
     getch();
     return 0;
 }
@@ -203,7 +203,7 @@ struct Node* BFS(struct List* listRoot, int startIndex, int endIndex){
     struct Node* answerIter = createEmptyNode();
     struct Node* answerRoot = answerIter;
     int maxQueueSize= listRoot->numNodes - 1;
-    int queueSize = maxQueueSize; // burada deðiþken alan israfýný önlemek için; maksimum kuyruk sayýsý, en fazla kenara sahip düðümün kenarlarýnýn sayýsý olabilir;
+    int queueSize = maxQueueSize; // buradaki deÄŸiÅŸken yer israfÄ±nÄ± Ã¶nlemek iÃ§in; herhangi bir node un en fazla kenar sayÄ±sÄ± kadar olabilir;
     struct Queue* queue = createQueue(queueSize);
     addQueue(queue,startIndex);
     int *isVisited = calloc(listRoot->numNodes,sizeof(int));
@@ -227,7 +227,7 @@ struct Node* BFS(struct List* listRoot, int startIndex, int endIndex){
 
         struct Node* iter = listRoot->Nodes[x];                             //
         while(iter != NULL){                                                //
-            if(isVisited[iter->index] == 0 && !isQueued(queue,iter->index)) // Ziyaret edilmemiþ komþularýný queue ye ekle;
+            if(isVisited[iter->index] == 0 && !isQueued(queue,iter->index)) // Ziyaret edilmemiÅŸ komÅŸularÄ±nÄ± queue ye ekle;
                 addQueue(queue,iter->index);                                //
             iter = iter->Next;                                              //
         }                                                                   //
