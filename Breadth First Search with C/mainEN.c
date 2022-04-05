@@ -3,12 +3,12 @@
 #include <conio.h>
 #include <math.h>
 
-struct Matris{
+struct Matrix{
     int num;
-    int** matris;
+    int** matrix;
 };
-void printMatris(struct Matris*); // kullanmadÄ±ÄŸÄ±m ama dosyada olmasÄ± gerektiÄŸini dÃ¼ÅŸÃ¼ndÃ¼ÄŸÃ¼m bir fonksiyon;
-int isAdjacencyMatris(struct Matris*); // kullanmadÄ±ÄŸÄ±m ama dosyada olmasÄ± gerektiÄŸini dÃ¼ÅŸÃ¼ndÃ¼ÄŸÃ¼m bir fonksiyon;
+void printMatrix(struct Matrix*); // a function I don't use but think it should be in the file;
+int isAdjacencyMatrix(struct Matrix*); // a function I don't use but think it should be in the file;
 struct Node{
     int index;
     struct Node* Next;
@@ -19,15 +19,15 @@ struct List{
     int numNodes;
     struct Node** Nodes;
 };
-void printList(struct List*); // kullanmadÄ±ÄŸÄ±m ama dosyada olmasÄ± gerektiÄŸini dÃ¼ÅŸÃ¼ndÃ¼ÄŸÃ¼m bir fonksiyon;
+void printList(struct List*); // a function I don't use but think it should be in the file;
 struct List* createEmptyList(int);
-struct Matris * fMatrisAl(FILE*);
-struct List* matrisToList(struct Matris*);
+struct Matrix * fGetMatrix(FILE*);
+struct List* matrixToList(struct Matrix*);
 
 struct Queue{
     int *items;
-    int son;
-    int bas;
+    int last;
+    int head;
 };
 int isQueued(struct Queue*, int);
 struct Queue* createQueue(int);
@@ -38,47 +38,48 @@ struct Node* BFS(struct List*, int, int);
 
 int main(){
     FILE *fptr = fopen("maze.txt","r");
-    if(fptr == NULL){//dosya okunmasÄ±nda sorunlarÄ± kontrol ediyor,varsa dosyanÄ±n nerde olmasÄ± gerektiÄŸine bir Ã¶rnek gÃ¶steriyor;
+    if(fptr == NULL){// It checks for problems in reading the file, and shows an example of where the file should be, if any;
         fptr = fopen("maze.txt","w");
-        printf("Dosya bulunamadi.\n"
-               "Ornek amacli bir dosya olusturuldu.(maze.txt)\n"
-               "Lutfen dosyayi ornek dosyanin isminde, ornek dosya klasorune kaydediniz.");
+        printf("File not found.\n"
+               "For an example file has been created.(maze.txt)\n"
+               "Please save the file in the sample file name, in the sample file folder.");
         fclose(fptr);
         getch();
-        return 1;//dosya bulunamadÄ±;
+        return 1; //File not found;
     }
-    struct Matris* matrisStruct = fMatrisAl(fptr);
-    if(matrisStruct == NULL){ // dosya formatÄ±nÄ± kontrol ediyor;
-        printf("Dosya formati kare matrisi icin uygun degil!");
+    struct Matrix* matrixStruct = fGetMatrix(fptr);
+    if(matrixStruct == NULL){ // checks the file format;
+        printf("File format not suitable for square matrix");
         getch();
-        return 2;// dosya formatÄ± yanlÄ±ÅŸ;
+        return 2; // the file format is wrong;
     }
-    struct List* list = matrisToList(matrisStruct);
+    struct List* list = matrixToList(matrixStruct);
 
-    struct Node* sonuc = BFS(list,list->numNodes-1,0);
-    // varsayýlan olarak en yüksek olan baþlangýç,?en düþük olan (yani 0) bitiþ olacaktýr;
+    struct Node* answer = BFS(list, list->numNodes - 1, 0);
+    // by default the highest will be the start, the lowest (i.e. 0) will be the end;
 
-    printf("\n");
-    printf("BFS ile sayiyi ararken kontrol edilen kose'ler:\n");
-    printNode(sonuc); // kontrol iÃ§in daha Ã¶ncesinde ekrana "queue" leride yazdÄ±rdÄ±m.
+    printf("\n"
+           "\n"
+           "Checked vertices when searching for number with BFS:\n");
+    printNode(answer); // I also printed the "queue"s to the screen beforehand for control.
     getch();
     return 0;
 }
 
-void printMatris(struct Matris* matris){
+void printMatrix(struct Matrix* matrix){ // a function I don't use but think it should be in the file;
     int i,j;
-    for(i=0;i<matris->num;i++){
-        for(j=0;j<matris->num;j++){
-            printf("%d ",matris->matris[i][j]);
+    for(i=0; i < matrix->num; i++){
+        for(j=0; j < matrix->num; j++){
+            printf("%d ", matrix->matrix[i][j]);
         }
         printf("\n");
     }
 }
-int isAdjacencyMatris(struct Matris* matris){
-    int i,j,x=1;
-    for (i = 0; i < matris->num; i++)
-        for (j = 0; j < matris->num; j++)
-            if (matris->matris[i][j] != matris->matris[j][i])
+int isAdjacencyMatrix(struct Matrix* matrixStruct){ // a function I don't use but think it should be in the file;
+    int i,j;
+    for (i = 0; i < matrixStruct->num; i++)
+        for (j = 0; j < matrixStruct->num; j++)
+            if (matrixStruct->matrix[i][j] != matrixStruct->matrix[j][i])
                 return 0;
     return 1;
 }
@@ -95,7 +96,7 @@ void printNode(struct Node* node){
     }
     printf("\n");
 }
-void printList(struct List* listRoot){
+void printList(struct List* listRoot){ // a function I don't use but think it should be in the file;
     int i;
     struct Node* temp;
     for(i=0 ; i < listRoot->numNodes ; i++){
@@ -117,34 +118,33 @@ struct List* createEmptyList(int num){
         list->Nodes[i] = createEmptyNode();
     return list;
 }
-struct Matris* fMatrisAl(FILE *fptr){
+struct Matrix* fGetMatrix(FILE* fptr){
     int x,i,j;
-    char t;
     for (i = 0; !feof(fptr); i++)
         fscanf(fptr, "%d ", &x);
     x = (int) sqrt(i);
     if(i != x * x) return NULL;
-    int** matris = malloc(x*sizeof(int*));
+    int** matrix = malloc(x * sizeof(int*));
     for(i=0; i < x; i++)
-        matris[i] = malloc(x*sizeof(int));
+        matrix[i] = malloc(x * sizeof(int));
 
     rewind(fptr);
     for (i = 0; i < x; i++)
         for (j = 0; j < x; j++)
-            fscanf(fptr, "%d ", &matris[i][j]);
+            fscanf(fptr, "%d ", &matrix[i][j]);
 
-    struct Matris* matrisStruct = malloc(sizeof(struct Matris));
-    matrisStruct->matris = matris;
-    matrisStruct->num=x;
-    return matrisStruct;
+    struct Matrix* matrixStruct = malloc(sizeof(struct Matrix));
+    matrixStruct->matrix = matrix;
+    matrixStruct->num=x;
+    return matrixStruct;
 }
-struct List* matrisToList(struct Matris* matrisStruct){
-    int i,j,flag=1;
-    struct List* list = createEmptyList(matrisStruct->num);
+struct List* matrixToList(struct Matrix* matrixStruct){
+    int i,j,flag;
+    struct List* list = createEmptyList(matrixStruct->num);
     struct Node* temp;
-    for (i = 0; i < matrisStruct->num; i++)
-        for (temp = list->Nodes[i], flag = 1, j = 0; j < matrisStruct->num; j++)
-            if (matrisStruct->matris[i][j] != 0)
+    for (i = 0; i < matrixStruct->num; i++)
+        for (temp = list->Nodes[i], flag = 1, j = 0; j < matrixStruct->num; j++)
+            if (matrixStruct->matrix[i][j] != 0)
                 if (flag) {
                     temp->index = j;
                     flag = 0;
@@ -157,45 +157,45 @@ struct List* matrisToList(struct Matris* matrisStruct){
 }
 int isQueued(struct Queue* queue,int num){
     int i;
-    for (i = queue->bas; i <= queue->son; i++)
+    for (i = queue->head; i <= queue->last; i++)
         if (queue->items[i] == num)
             return 1;
     return 0;
 }
 struct Queue* createQueue(int queueSize){
     struct Queue* q = malloc(sizeof(struct Queue));
-    q->bas=-1;
-    q->son=-1;
+    q->head=-1;
+    q->last=-1;
     q->items = calloc(queueSize,sizeof(int));
     return q;
 }
 void addQueue(struct Queue* queue, int num){
-    if(queue->bas == -1){
-        queue->bas = queue->son = 0;
+    if(queue->head == -1){
+        queue->head = queue->last = 0;
         queue->items[0] = num;
     }
     else
-        queue->items[++queue->son] = num;
+        queue->items[++queue->last] = num;
 }
 int deQueue(struct  Queue* queue){
-    if (queue->bas > queue->son){
-        queue->bas = queue->son = -1;
+    if (queue->head > queue->last){
+        queue->head = queue->last = -1;
         return -1;
     }
-    int x = queue->items[queue->bas++];
-    if (queue->bas > queue->son)
-        queue->bas = queue->son = -1;
+    int x = queue->items[queue->head++];
+    if (queue->head > queue->last)
+        queue->head = queue->last = -1;
     return x;
 }
 void printQueue(struct Queue* queue){
     int i;
 
     printf("queue: ");
-    if(queue->bas == -1){
+    if(queue->head == -1){
         printf("{empty}\n");
         return;
     }
-    for(i=queue->bas;i<=queue->son;i++)
+    for(i=queue->head; i <= queue->last; i++)
         printf("%d, ",queue->items[i]);
     printf("\n");
 }
@@ -203,16 +203,16 @@ struct Node* BFS(struct List* listRoot, int startIndex, int endIndex){
     struct Node* answerIter = createEmptyNode();
     struct Node* answerRoot = answerIter;
     int maxQueueSize= listRoot->numNodes - 1;
-    int queueSize = maxQueueSize; // burada deðiþken alan israfýný önlemek için; maksimum kuyruk sayýsý, en fazla kenara sahip düðümün kenarlarýnýn sayýsý olabilir;
+    int queueSize = maxQueueSize; // to avoid wasting variable space here; the maximum number of queues can be the number of edges of the node with the most edges;
     struct Queue* queue = createQueue(queueSize);
     addQueue(queue,startIndex);
     int *isVisited = calloc(listRoot->numNodes,sizeof(int));
     int flag = 1;
-    while(queue->bas != -1){
+    while(queue->head != -1){
         printQueue(queue);
-        int x = deQueue(queue); // queue'den al;
+        int x = deQueue(queue); // get next from queue;
 
-        isVisited[x] = 1; // SÄ±radan aldÄ±ÄŸÄ±n sayÄ±yÄ± ziyaret edildi olarak iÅŸaretle;
+        isVisited[x] = 1; // Mark the number you received ordinary as visited;
 
         if(!flag){
             answerIter->Next = createEmptyNode();
@@ -227,7 +227,7 @@ struct Node* BFS(struct List* listRoot, int startIndex, int endIndex){
 
         struct Node* iter = listRoot->Nodes[x];                             //
         while(iter != NULL){                                                //
-            if(isVisited[iter->index] == 0 && !isQueued(queue,iter->index)) // Ziyaret edilmemiþ komþularýný queue ye ekle;
+            if(isVisited[iter->index] == 0 && !isQueued(queue,iter->index)) // Add your unvisited neighbors to queue;
                 addQueue(queue,iter->index);                                //
             iter = iter->Next;                                              //
         }                                                                   //

@@ -7,8 +7,8 @@ struct Matris{
     int num;
     int** matris;
 };
-void printMatris(struct Matris*); // kullanmadÄ±ÄŸÄ±m ama dosyada olmasÄ± gerektiÄŸini dÃ¼ÅŸÃ¼ndÃ¼ÄŸÃ¼m bir fonksiyon;
-int isAdjacencyMatris(struct Matris*); // kullanmadÄ±ÄŸÄ±m ama dosyada olmasÄ± gerektiÄŸini dÃ¼ÅŸÃ¼ndÃ¼ÄŸÃ¼m bir fonksiyon;
+void printMatris(struct Matris*);
+int isAdjacencyMatris(struct Matris*);
 struct Node{
     int index;
     struct Node* Next;
@@ -19,7 +19,7 @@ struct List{
     int numNodes;
     struct Node** Nodes;
 };
-void printList(struct List*); // kullanmadÄ±ÄŸÄ±m ama dosyada olmasÄ± gerektiÄŸini dÃ¼ÅŸÃ¼ndÃ¼ÄŸÃ¼m bir fonksiyon;
+void printList(struct List*);
 struct List* createEmptyList(int);
 struct Matris * fMatrisAl(FILE*);
 struct List* matrisToList(struct Matris*);
@@ -38,29 +38,28 @@ struct Node* BFS(struct List*, int, int);
 
 int main(){
     FILE *fptr = fopen("maze.txt","r");
-    if(fptr == NULL){//dosya okunmasÄ±nda sorunlarÄ± kontrol ediyor,varsa dosyanÄ±n nerde olmasÄ± gerektiÄŸine bir Ã¶rnek gÃ¶steriyor;
+    if(fptr == NULL){
         fptr = fopen("maze.txt","w");
         printf("Dosya bulunamadi.\n"
                "Ornek amacli bir dosya olusturuldu.(maze.txt)\n"
                "Lutfen dosyayi ornek dosyanin isminde, ornek dosya klasorune kaydediniz.");
         fclose(fptr);
         getch();
-        return 1;//dosya bulunamadÄ±;
+        return 1;
     }
     struct Matris* matrisStruct = fMatrisAl(fptr);
-    if(matrisStruct == NULL){ // dosya formatÄ±nÄ± kontrol ediyor;
-        printf("Dosya formati kare matrisi icin uygun degil!");
+    if(matrisStruct == NULL){
+        printf("dosya formati kare matrisi icin uygun degil");
         getch();
-        return 2;// dosya formatÄ± yanlÄ±ÅŸ;
+        return 2;
     }
     struct List* list = matrisToList(matrisStruct);
 
     struct Node* sonuc = BFS(list,list->numNodes-1,0);
-    // varsayýlan olarak en yüksek olan baþlangýç,?en düþük olan (yani 0) bitiþ olacaktýr;
 
     printf("\n");
     printf("BFS ile sayiyi ararken kontrol edilen kose'ler:\n");
-    printNode(sonuc); // kontrol iÃ§in daha Ã¶ncesinde ekrana "queue" leride yazdÄ±rdÄ±m.
+    printNode(sonuc);
     getch();
     return 0;
 }
@@ -203,16 +202,16 @@ struct Node* BFS(struct List* listRoot, int startIndex, int endIndex){
     struct Node* answerIter = createEmptyNode();
     struct Node* answerRoot = answerIter;
     int maxQueueSize= listRoot->numNodes - 1;
-    int queueSize = maxQueueSize; // burada deðiþken alan israfýný önlemek için; maksimum kuyruk sayýsý, en fazla kenara sahip düðümün kenarlarýnýn sayýsý olabilir;
+    int queueSize = maxQueueSize;
     struct Queue* queue = createQueue(queueSize);
     addQueue(queue,startIndex);
     int *isVisited = calloc(listRoot->numNodes,sizeof(int));
     int flag = 1;
     while(queue->bas != -1){
         printQueue(queue);
-        int x = deQueue(queue); // queue'den al;
+        int x = deQueue(queue);
 
-        isVisited[x] = 1; // SÄ±radan aldÄ±ÄŸÄ±n sayÄ±yÄ± ziyaret edildi olarak iÅŸaretle;
+        isVisited[x] = 1;
 
         if(!flag){
             answerIter->Next = createEmptyNode();
@@ -225,14 +224,12 @@ struct Node* BFS(struct List* listRoot, int startIndex, int endIndex){
 
         if(x == endIndex) break;
 
-        struct Node* iter = listRoot->Nodes[x];                             //
-        while(iter != NULL){                                                //
-            if(isVisited[iter->index] == 0 && !isQueued(queue,iter->index)) // Ziyaret edilmemiþ komþularýný queue ye ekle;
-                addQueue(queue,iter->index);                                //
-            iter = iter->Next;                                              //
-        }                                                                   //
-
+        struct Node* iter = listRoot->Nodes[x];
+        while(iter != NULL){
+            if(isVisited[iter->index] == 0 && !isQueued(queue,iter->index))
+                addQueue(queue,iter->index);
+            iter = iter->Next;
+        }
     }
-
     return answerRoot;
 }
