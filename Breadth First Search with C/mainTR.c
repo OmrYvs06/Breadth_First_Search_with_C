@@ -7,8 +7,8 @@ struct Matris{
     int num;
     int** matris;
 };
-void printMatris(struct Matris*); // ödev gereği kullanmadığım ama dosyada olması gerektiğini düşündüğüm bir fonksiyon
-int isAdjacencyMatris(struct Matris*); // ödev gereği kullanmadığım ama dosyada olması gerektiğini düşündüğüm bir fonksiyon
+void printMatris(struct Matris*); // kullanmadığım ama dosyada olması gerektiğini düşündüğüm bir fonksiyon
+int isAdjacencyMatris(struct Matris*); // kullanmadığım ama dosyada olması gerektiğini düşündüğüm bir fonksiyon
 struct Node{
     int index;
     struct Node* Next;
@@ -19,7 +19,7 @@ struct List{
     int numNodes;
     struct Node** Nodes;
 };
-void printList(struct List*); // ödev gereği kullanmadığım ama dosyada olması gerektiğini düşündüğüm bir fonksiyon
+void printList(struct List*); // kullanmadığım ama dosyada olması gerektiğini düşündüğüm bir fonksiyon
 struct List* createEmptyList(int);
 struct Matris * fMatrisAl(FILE*);
 struct List* matrisToList(struct Matris*);
