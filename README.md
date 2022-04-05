@@ -1,4 +1,4 @@
-# Breadth_First_Search_with C
+# Breadth First Search with C
 
 tr: Lütfen çalışmasını istediğiniz graf'ı "maze.txt" dosyasına kaydediniz.
     Ben varsayılan olarak "3x3-2.sample" klasöründeki dosyayı kullanıyorum.
