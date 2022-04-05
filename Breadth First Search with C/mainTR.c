@@ -36,7 +36,7 @@ int deQueue(struct  Queue*);
 void printQueue(struct Queue*);
 struct Node* BFS(struct List*, int, int);
 
-int main(){ // graphı almaya kadar temiz çalışıyor devamı bilinmiyor;
+int main(){
     FILE *fptr = fopen("maze.txt","r");
     if(fptr == NULL){ // dosya okunmasında sorunları kontrol ediyor,varsa dosyanın nerde olması gerektiğine bir örnek gösteriyor;
         fptr = fopen("maze.txt","w");
@@ -203,7 +203,7 @@ struct Node* BFS(struct List* listRoot, int startIndex, int endIndex){
     struct Node* answerIter = createEmptyNode();
     struct Node* answerRoot = answerIter;
     int maxQueueSize= listRoot->numNodes - 1;
-    int queueSize = maxQueueSize; // buradaki değişken yer israfını önlemek için; herhangi bir node un en fazla kenar sayısı kadar olabilir;
+    int queueSize = maxQueueSize; // buradaki değişken yer israfını önlemek için en fazla, en fazla kenara sahip node un kenar sayısı kadar olabilir;
     struct Queue* queue = createQueue(queueSize);
     addQueue(queue,startIndex);
     int *isVisited = calloc(listRoot->numNodes,sizeof(int));
